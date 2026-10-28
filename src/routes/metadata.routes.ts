@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-export const metadataRouter = Router();
+const metadataRouter = Router();
 
 metadataRouter.get(
   "/.well-known/oauth-protected-resource",
@@ -13,3 +13,5 @@ metadataRouter.get(
     });
   }
 );
+
+export default metadataRouter;

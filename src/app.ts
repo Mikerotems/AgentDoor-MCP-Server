@@ -1,9 +1,14 @@
+import "dotenv/config";
 import express from "express";
-import {metadataRouter} from "./routes/metadata.routes.js";
+import metadataRouter from "./routes/metadata.routes";
+import protectedRouter from "./routes/protected.routes";
 
-export const app = express();
-
+const PORT = process.env.PORT || 5000;
+const app = express();
 app.use(express.json());
-app.use(metadataRouter);
 
+app.use("/api", protectedRouter);
 
+app.use("/api", metadataRouter);
+
+export default app;

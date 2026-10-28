@@ -1,38 +1,34 @@
 {
-  "name": "agentdoor-mcp-server",
+  "name": "mcp-server",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [
-    "javascript",
-    "typescript",
-    "node"
-  ],
-  "homepage": "https://github.com/Mikerotems/AgentDoor-MCP-Server#readme",
-  "bugs": {
-    "url": "https://github.com/Mikerotems/AgentDoor-MCP-Server/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Mikerotems/AgentDoor-MCP-Server.git"
-  },
-  "license": "ISC",
-  "author": "Michael Oluwarotimi",
-  "type": "module",
-  "main": "server.js",
+  "description": "MCP Server Challenge",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --exec ts-node --files src/server.ts",
+    "build": "tsc -p src/tsconfig.json",
+    "start": "node dist/server.js"
   },
+  "keywords": [
+    "mcp",
+    "typescript",
+    "express",
+    "keycloak"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "dotenv": "^18.0.9",
-    "express": "^5.3.0",
-    "jose": "^6.2.13",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.11.4",
-    "nodemon": "^3.1.14"
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "jose": "^6.1.0",
+    "mongoose": "^8.18.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^26.6.5",
-    "typescript": "^7.0.2"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.6.0",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
