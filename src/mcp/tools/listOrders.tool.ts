@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { orderModel } from "../../models/orderModel";
+import { logAudit } from "../../services/audit.service";
 
 export const listOrdersTool = {
   name: "list_orders",
@@ -17,13 +18,28 @@ export const listOrdersTool = {
       .optional(),
   },
 
-  async execute(args: { status?: string | undefined }) {
+  async execute(args: {
+    status?:
+      "pending" |
+    "paid" |
+    "refund_requested" |
+    "refund_approved" | undefined;
+  }) {
     const query: any = {};
 
     if (args.status) {
       query.status = args.status;
     }
 
-    return await orderModel.find(query);
+    const orders = await orderModel.find(query);
+
+    await logAudit(
+      "agent",
+      "list_orders",
+      args,
+      orders
+    );
+
+    return orders;
   },
 };

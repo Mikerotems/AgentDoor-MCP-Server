@@ -1,8 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { weatherTool } from "./tools/weather.tool";
-import { customerTool } from "./tools/customer.tool";
-
+import { refundOrderTool } from "./tools/refundOrder.tool";
 import { listOrdersTool } from "./tools/listOrders.tool";
 import { getOrderTool } from "./tools/getOrder.tool";
 
@@ -52,3 +50,26 @@ export const tools = [
   listOrdersTool,
   getOrderTool,
 ];
+
+mcpServer.tool(
+  refundOrderTool.name,
+  refundOrderTool.description,
+  refundOrderTool.inputSchema,
+  async (args) => {
+    const result =
+      await refundOrderTool.execute(args);
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            result,
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
