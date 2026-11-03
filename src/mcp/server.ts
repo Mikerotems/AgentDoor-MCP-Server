@@ -3,18 +3,21 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { weatherTool } from "./tools/weather.tool";
 import { customerTool } from "./tools/customer.tool";
 
+import { listOrdersTool } from "./tools/listOrders.tool";
+import { getOrderTool } from "./tools/getOrder.tool";
+
 export const mcpServer = new McpServer({
   name: "AgentDoor MCP Server",
   version: "1.0.0",
 });
 
 mcpServer.tool(
-  weatherTool.name,
-  weatherTool.description,
-  weatherTool.inputSchema,
-  async ({ city }) => {
-    const result = await weatherTool.execute({ city });
-
+  listOrdersTool.name,
+  listOrdersTool.description,
+  listOrdersTool.inputSchema,
+  async (args) => {
+    const result = await listOrdersTool.execute({ status: args.status,
+});
     return {
       content: [
         {
@@ -27,11 +30,11 @@ mcpServer.tool(
 );
 
 mcpServer.tool(
-  customerTool.name,
-  customerTool.description,
-  customerTool.inputSchema,
-  async ({ email }) => {
-    const result = await customerTool.execute({ email });
+  getOrderTool.name,
+  getOrderTool.description,
+  getOrderTool.inputSchema,
+  async (args) => {
+    const result = await getOrderTool.execute(args);
 
     return {
       content: [
@@ -46,6 +49,6 @@ mcpServer.tool(
 
 
 export const tools = [
-  weatherTool,
-  customerTool,
+  listOrdersTool,
+  getOrderTool,
 ];
