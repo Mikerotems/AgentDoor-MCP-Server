@@ -41,5 +41,5 @@
     "skipLibCheck": true
   },
 
-  "include": ["./**/*"]
+  "include": ["./**/*", "mcp/tools"]
 }
