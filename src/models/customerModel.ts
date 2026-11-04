@@ -1,9 +1,24 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 
-const customerSchema = new mongoose.Schema({
-    cust_name: {type: String, required: true},
-    cust_email: {type: String, requires: true},
-    cust_phone: {type: String, required: true}
-}, {timestamps: true});
+const customerSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
 
-export const customerModel = mongoose.model("Customer", customerSchema);
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+export const customerModel = model(
+  "Customer",
+  customerSchema
+);

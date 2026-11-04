@@ -1,23 +1,16 @@
 import { Router } from "express";
-console.log("ORDER ROUTER LOADED");
 import {
   createOrder,
+  getOrder,
+  listOrders,
 } from "../controllers/order.controller";
-
-import {
-  createCustomer,
-} from "../controllers/customer.controller";
 
 const orderRouter = Router();
 
-orderRouter.post(
-  "/customers",
-  createCustomer
-);
+orderRouter.post("/", createOrder);
 
-orderRouter.post(
-  "/orders",
-  createOrder
-);
+orderRouter.get("/", listOrders);
+
+orderRouter.get("/:id", getOrder);
 
 export default orderRouter;

@@ -12,13 +12,18 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
 
+  paymentReference: {
+  type: String,
+  },
+  
   status: {
     type: String,
     enum: [
       "pending",
       "paid",
       "refund_requested",
-      "refund_approved"
+      "refund_approved",
+      "completed"
     ],
     default: "pending",
   },

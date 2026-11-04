@@ -1,0 +1,15 @@
+$kind: http-request
+name: http://localhost:5000/api/customers
+description: ""
+url: http://localhost:5000/api/customers
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \"name\":\"Michael\",\r
+
+    \"email\":\"michael@test.com\"\r
+
+    }"
+order: 1793783837268
