@@ -8,7 +8,7 @@ async function startServer() {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT}`);
+    console.log(`AgentDoor server is running on port ${PORT}`);
   });
 }
 

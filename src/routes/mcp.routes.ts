@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { createTransport } from "../mcp/transport";
 import { mcpServer } from "../mcp/server";
+import { authenticateMcp } from "../middlewares/authenticateMcp";
 
 const mcpRouter = Router();
 
@@ -17,16 +18,20 @@ mcpRouter.get("/.well-known/mcp", (req, res) => {
   });
 });
 
-mcpRouter.post("/mcp", async (req, res) => {
-  try {
-    await transport.handleRequest(req, res, req.body);
-  } catch (error) {
-    console.error(error);
+mcpRouter.post(
+  "/mcp",
+  authenticateMcp,
+  async (req, res) => {
+    try {
+      await transport.handleRequest(req, res, req.body);
+    } catch (error) {
+      console.error(error);
 
-    res.status(500).json({
-      error: "MCP transport error",
-    });
+      res.status(500).json({
+        error: "MCP transport error",
+      });
+    }
   }
-});
+);
 
 export default mcpRouter;

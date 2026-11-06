@@ -2,8 +2,11 @@ import axios from "axios";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 import squad from "../services/squad.service";
-import { customerModel } from "../models/customerModel";
 import { orderModel } from "../models/orderModel";
+import {
+  createPaymentLinkForOrder,
+  PaymentLinkError,
+} from "../services/paymentLink.service";
 
 export const createPaymentLink = async (
   req: Request,
@@ -11,91 +14,28 @@ export const createPaymentLink = async (
 ) => {
   try {
     const { orderId, email } = req.body ?? {};
-
-    if (
-      typeof orderId !== "string" ||
-      !mongoose.isValidObjectId(orderId)
-    ) {
+    if (typeof orderId !== "string") {
       return res.status(400).json({
         success: false,
         message: "A valid orderId is required",
       });
     }
 
-    const order = await orderModel
-      .findById(orderId)
-      .populate("customerId");
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    const customer = await customerModel.findById(
-      order.customerId
-    );
-
-    if (!customer) {
-      return res.status(404).json({
-        success: false,
-        message: "Order customer not found",
-      });
-    }
-
-    const paymentEmail =
-      typeof email === "string" && email.trim()
-        ? email.trim()
-        : typeof customer.email === "string"
-        ? customer.email.trim()
-        : "";
-
-    if (!paymentEmail) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "A customer email is required to create a payment link",
-      });
-    }
-
-    const txRef = `ORD-${Date.now()}`;
-
-    const response = await squad().post(
-      "/transaction/initiate",
-      {
-        email: paymentEmail,
-        amount: order.amountKobo,
-        transaction_ref: txRef,
-        currency: "NGN",
-        initiate_type: "inline",
-      }
-    );
-
-    const checkoutUrl =
-      response.data?.data?.checkout_url;
-
-    if (
-      typeof checkoutUrl !== "string" ||
-      !checkoutUrl
-    ) {
-      return res.status(502).json({
-        success: false,
-        message: "Squad did not return a checkout URL",
-      });
-    }
-
-    order.paymentReference = txRef;
-    order.paymentStatus = "pending";
-
-    await order.save();
+    const result = await createPaymentLinkForOrder(orderId, email);
 
     return res.status(201).json({
       success: true,
-      paymentUrl: checkoutUrl,
-      data: response.data,
+      paymentUrl: result.paymentUrl,
+      data: result.data,
     });
   } catch (error) {
+    if (error instanceof PaymentLinkError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     const errorMessage =
       axios.isAxiosError(error) &&
       typeof error.response?.data?.message === "string"

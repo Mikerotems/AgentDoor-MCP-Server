@@ -3,12 +3,69 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { refundOrderTool } from "./tools/refundOrder.tool";
 import { listOrdersTool } from "./tools/listOrders.tool";
 import { getOrderTool } from "./tools/getOrder.tool";
-import { getPaymentStatusTool, verifyPaymentTool } from "./tools/payment.tools";
+import {
+  createPaymentLinkTool,
+  getPaymentStatusTool,
+  verifyPaymentTool,
+} from "./tools/payment.tools";
+import { createCustomerTool } from "./tools/createCustomer.tool";
+import { createOrderTool } from "./tools/createOrder.tool";
 
 export const mcpServer = new McpServer({
   name: "AgentDoor MCP Server",
   version: "1.0.0",
 });
+
+mcpServer.tool(
+  createCustomerTool.name,
+  createCustomerTool.description,
+  createCustomerTool.inputSchema,
+  async (args) => {
+    const result = await createCustomerTool.execute(args);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+);
+
+mcpServer.tool(
+  createOrderTool.name,
+  createOrderTool.description,
+  createOrderTool.inputSchema,
+  async (args) => {
+    const result = await createOrderTool.execute(args);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+);
+
+mcpServer.tool(
+  createPaymentLinkTool.name,
+  createPaymentLinkTool.description,
+  createPaymentLinkTool.inputSchema.shape,
+  async (args) => {
+    const result = await createPaymentLinkTool.execute(args);
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+);
 
 mcpServer.tool(
   listOrdersTool.name,
@@ -105,9 +162,12 @@ mcpServer.tool(
 );
 
 export const tools = [
+  createCustomerTool,
+  createOrderTool,
   listOrdersTool,
   getOrderTool,
   refundOrderTool,
+  createPaymentLinkTool,
   verifyPaymentTool,
   getPaymentStatusTool
 ];

@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: agentdoor-mcp-server
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DBURI
+        sync: false
+      - key: MCP_API_KEY
+        sync: false
+      - key: KEYCLOAK_URL
+        sync: false
+      - key: KEYCLOAK_REALM
+        sync: false
+      - key: KEYCLOAK_CLIENT_ID
+        sync: false
+      - key: SQUAD_BASE_URL
+        sync: false
+      - key: SQUAD_SECRET_KEY
+        sync: false

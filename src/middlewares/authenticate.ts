@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 
-console.log("AUTH FILE LOADED");
-
 function getRequiredEnv(name: string): string {
   const value = process.env[name];
 
@@ -25,9 +23,6 @@ const ISSUER =
     : `${KEYCLOAK_URL.origin}${configuredPath}/realms/${encodeURIComponent(
         REALM
       )}`;
-
-console.log("ISSUER:", ISSUER);
-
 const JWKS = createRemoteJWKSet(
   new URL(`${ISSUER}/protocol/openid-connect/certs`)
 );

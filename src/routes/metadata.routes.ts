@@ -2,8 +2,6 @@ import { Router } from "express";
 
 const metadataRouter = Router();
 
-console.log("METADATA ROUTER LOADED");
-
 metadataRouter.get(
   "/.well-known/oauth-protected-resource",
   (req, res) => {

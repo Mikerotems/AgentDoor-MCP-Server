@@ -1,6 +1,37 @@
 import { z } from "zod";
 import { orderModel } from "../../models/orderModel";
 import squad from "../../services/squad.service";
+import { logAudit } from "../../services/audit.service";
+import { createPaymentLinkForOrder } from "../../services/paymentLink.service";
+
+export const createPaymentLinkTool = {
+  name: "create_payment_link",
+
+  description:
+    "Generate a Squad payment link for an order using the customer's email address.",
+
+  inputSchema: z.object({
+    order_id: z
+      .string()
+      .regex(/^[a-f\d]{24}$/i, "order_id must be a valid MongoDB ObjectId"),
+  }),
+
+  execute: async ({ order_id }: { order_id: string }) => {
+    const result = await createPaymentLinkForOrder(order_id);
+
+    const paymentLink = {
+      success: true,
+      orderId: result.order._id,
+      paymentReference: result.paymentReference,
+      paymentStatus: result.order.paymentStatus,
+      paymentUrl: result.paymentUrl,
+    };
+
+    await logAudit("agent", "create_payment_link", { order_id }, paymentLink);
+
+    return paymentLink;
+  },
+};
 
 export const verifyPaymentTool = {
   name: "verify_payment",
@@ -12,7 +43,7 @@ export const verifyPaymentTool = {
     orderId: z.string(),
   }),
 
-  execute: async ({
+execute: async ({
     orderId,
   }: {
     orderId: string;
